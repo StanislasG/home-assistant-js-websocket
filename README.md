@@ -391,7 +391,7 @@ Fetches a new access token from the server.
 
 Makes a request to the server to revoke the refresh and all related access token. Returns a promise that resolves when the request is finished.
 
-**Note:** If you support storing and retrieving tokens, the returned auth object might load tokens from your cache that are no longer valid. If this happens, the promise returned by `createConnection` will reject with `ERR_INVALID_AUTH`. If that happens, clear your tokens with `storeTokens(null`) and call `getAuth` again. This will pick up the auth flow without relying on stored tokens.
+**Note:** If you support storing and retrieving tokens, the returned auth object might load tokens from your cache that are no longer valid. If this happens, the promise returned by `createConnection` will reject with `ERR_INVALID_AUTH`. If that happens, clear your tokens with `storeTokens(null)` and call `getAuth` again. This will pick up the auth flow without relying on stored tokens.
 
 ## Error Reference
 
@@ -408,6 +408,7 @@ Makes a request to the server to revoke the refresh and all related access token
 The library also contains a few helper method that you can use to ineract with the API.
 
 - `getUser(connection) -> Promise<HassUser>`
+- `getGroups(connection) -> Promise<HassGroups> `
 - `callService(connection, domain, service, serviceData?, target?) -> Promise` (Support for `target` was added in Home Assistant Core 2021.3)
 
 The following are also available, but it's recommended that you use the subscribe methods documented above.

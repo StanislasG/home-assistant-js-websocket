@@ -5,6 +5,8 @@
   <body>
     <button onclick="connection.reconnect()">Reconnect</button>
     <button onclick="setupEntitiesSubscription()">Re-subscribe</button>
+    <button onclick="auth.revoke()">Revoke</button>
+    <p id='e'></p>
     <table>
       <tbody></tbody>
     </table>
@@ -12,6 +14,7 @@
       import {
         getAuth,
         getUser,
+        getGroups,
         callService,
         createConnection,
         subscribeEntities,
@@ -66,10 +69,29 @@
         getUser(connection).then((user) => {
           console.log("Logged in as", user);
           window.user = user;
+          setupUserInfo();
         });
 
         setupEntitiesSubscription();
       })();
+
+      window.setupUserInfo = async () => {
+        if (window.user == null) {
+          console.log("no user");
+          await new Promise((resolve) => setTimeout(resolve, 4000));
+        }
+        userInfo = 
+          getUser(connection).then((user) =>
+            {getGroups(connection).then((groups) =>
+              {renderUserInfo(user, groups)})});
+      };
+
+      function renderUserInfo (user, groups) {
+        document.getElementById('e').innerHTML = 
+        `current user: ${user["name"]} <br> groups: ${groups["groups"]}`;
+      };
+
+      let userInfo;
 
       let unsubEntities;
 

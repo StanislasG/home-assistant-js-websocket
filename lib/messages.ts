@@ -39,6 +39,12 @@ export function user() {
   };
 }
 
+export function groups() {
+  return {
+    type: "auth/current_user_groups",
+  };
+}
+
 type ServiceCallMessage = {
   type: "call_service";
   domain: string;

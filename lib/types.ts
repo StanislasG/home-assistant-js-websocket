@@ -124,6 +124,11 @@ export type HassUser = {
   name: string;
 };
 
+export type HassGroups = {
+  id: string;
+  group: string[];
+};
+
 export type HassServiceTarget = {
   entity_id?: string | string[];
   device_id?: string | string[];
