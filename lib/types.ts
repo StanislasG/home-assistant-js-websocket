@@ -125,8 +125,27 @@ export type HassUser = {
 };
 
 export type HassGroups = {
-  id: string;
+  id: string;  //of user
   group: string[];
+};
+
+// only for entities ids
+export type HassPolicy = {
+  entity_ids: {
+    [entity_id: string]: {
+      'read': boolean;
+      'control': boolean;
+      'edit': boolean;
+    }
+  }
+};
+
+export type HassGroup = {
+  // id: string; //of user
+  id: string; // group id
+  policy:{ //could be extended to all policies
+    entities: HassPolicy
+  }
 };
 
 export type HassServiceTarget = {

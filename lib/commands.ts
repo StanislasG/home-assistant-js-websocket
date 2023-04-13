@@ -7,6 +7,7 @@ import {
   HassUser,
   HassServiceTarget,
   HassGroups,
+  HassGroup,
 } from "./types.js";
 
 export const getStates = (connection: Connection) =>
@@ -23,6 +24,9 @@ export const getUser = (connection: Connection) =>
 
 export const getGroups = (connection: Connection) =>
   connection.sendMessagePromise<HassGroups>(messages.groups());
+ 
+export const addGroup = (connection: Connection, group: Object) =>
+  connection.sendMessagePromise<HassGroup>(messages.add_group(group));
 
 export const callService = (
   connection: Connection,

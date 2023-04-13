@@ -6,7 +6,18 @@
     <button onclick="connection.reconnect()">Reconnect</button>
     <button onclick="setupEntitiesSubscription()">Re-subscribe</button>
     <button onclick="auth.revoke()">Revoke</button>
-    <p id='e'></p>
+    <!-- current user and his groups -->
+    <p id='e'></p> 
+
+    <form id='add_group'>
+      group name  <input type="text" name="group_name" id="group_name">
+      entity id   <input type="text" name="entity_id"  id="entity_id">
+      read        <input type="checkbox" name="read" id="read">
+      control     <input type="checkbox" name="control" id="control">
+      edit        <input type="checkbox" name="edit" id="edit">
+    </form> 
+    <button type="button" form="add_group" onclick="addGroupFunc()">Submit</button>
+    
     <table>
       <tbody></tbody>
     </table>
@@ -15,12 +26,12 @@
         getAuth,
         getUser,
         getGroups,
+        addGroup,
         callService,
         createConnection,
         subscribeEntities,
         ERR_HASS_HOST_REQUIRED,
       } from "./dist/index.js";
-
       (async () => {
         let auth;
         const storeAuth = true;
@@ -75,6 +86,40 @@
         setupEntitiesSubscription();
       })();
 
+
+      //add new group
+      window.addGroupFunc= async () =>{
+        // const form = document.getElementById('add_group')
+        // const formElements = Array.from(form.elements);
+
+        const id      = document.getElementById('group_name').value;
+        const entity  = document.getElementById('entity_id').value;
+        const read    = document.getElementById('read').checked;
+        const control = document.getElementById('control').checked;
+        const edit    = document.getElementById('edit').checked;
+        
+        const group = {
+          'id': id,
+          'entity': entity,
+          'read':    read,
+          'control': control,
+          'edit':    edit
+        };
+        // formElements.forEach(element => {
+        //   if(element.type == "checkbox"){
+        //     console.log(element.name, element.checked);
+        //   }else if(element.type == "text"){
+        //     console.log(element.name, element.value);
+        //   }
+
+          console.log("here");
+          addGroup(connection, group).then((response) =>{
+            console.log("addGroupresponse", response)
+            })
+      }
+      
+
+      //print current user and his groups
       window.setupUserInfo = async () => {
         if (window.user == null) {
           console.log("no user");
@@ -85,14 +130,13 @@
             {getGroups(connection).then((groups) =>
               {renderUserInfo(user, groups)})});
       };
-
       function renderUserInfo (user, groups) {
         document.getElementById('e').innerHTML = 
         `current user: ${user["name"]} <br> groups: ${groups["groups"]}`;
       };
-
       let userInfo;
 
+      //print all entities
       let unsubEntities;
 
       window.setupEntitiesSubscription = async () => {

@@ -1,4 +1,4 @@
-import { Error, HassServiceTarget } from "./types.js";
+import { Error, HassGroup, HassServiceTarget } from "./types.js";
 
 export function auth(accessToken: string) {
   return {
@@ -44,6 +44,35 @@ export function groups() {
     type: "auth/current_user_groups",
   };
 }
+
+export function add_group(group: Object) {
+ 
+
+  const my_group: HassGroup = {
+    'id': group['id'],
+    'policy':{ //could be extended to all policies
+      'entities':{
+        'entity_ids': {
+          [group['entity']]:{
+            'read':    group['read'],
+            'control': group['control'],
+            'edit':    group['edit']
+          }
+        }
+      }
+    }
+  };
+  console.log('df', my_group)
+  return {
+    type: "auth/add_group",
+    name:       group['id'],
+    entity:   group['entity'],
+    read:     group['read'],
+    control:  group['control'],
+    edit:     group['edit']
+  };
+}
+
 
 type ServiceCallMessage = {
   type: "call_service";
