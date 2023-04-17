@@ -39,6 +39,12 @@ export function user() {
   };
 }
 
+export function users() {
+  return {
+    type: "auth/get_users",
+  };
+}
+
 export function groups() {
   return {
     type: "auth/current_user_groups",

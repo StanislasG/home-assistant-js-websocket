@@ -22,6 +22,9 @@ export const getConfig = (connection: Connection) =>
 export const getUser = (connection: Connection) =>
   connection.sendMessagePromise<HassUser>(messages.user());
 
+export const getUsers = (connection: Connection) =>
+  connection.sendMessagePromise<HassUser[]>(messages.users());
+
 export const getGroups = (connection: Connection) =>
   connection.sendMessagePromise<HassGroups>(messages.groups());
  

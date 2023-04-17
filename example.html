@@ -9,6 +9,7 @@
     <!-- current user and his groups -->
     <p id='e'></p> 
 
+    <!-- add groups -->
     <form id='add_group'>
       group name  <input type="text" name="group_name" id="group_name">
       entity id   <input type="text" name="entity_id"  id="entity_id">
@@ -17,14 +18,27 @@
       edit        <input type="checkbox" name="edit" id="edit">
     </form> 
     <button type="button" form="add_group" onclick="addGroupFunc()">Submit</button>
-    
+    <br/>
+
+    <!-- users -->
+    <form id='all_users'>
+      <label for="users">see all users:</label>
+      <select name="users" id="users">
+        <!-- load at startup dynamicly the elements -->
+        <!-- <option value="volvo">Volvo</option> -->
+      </select>
+    </form>
+
+    <!-- entities -->
     <table>
       <tbody></tbody>
     </table>
+
     <script type="module">
       import {
         getAuth,
         getUser,
+        getUsers,
         getGroups,
         addGroup,
         callService,
@@ -84,14 +98,12 @@
         });
 
         setupEntitiesSubscription();
+        setupAllUsers();
       })();
 
 
       //add new group
       window.addGroupFunc= async () =>{
-        // const form = document.getElementById('add_group')
-        // const formElements = Array.from(form.elements);
-
         const id      = document.getElementById('group_name').value;
         const entity  = document.getElementById('entity_id').value;
         const read    = document.getElementById('read').checked;
@@ -105,19 +117,29 @@
           'control': control,
           'edit':    edit
         };
-        // formElements.forEach(element => {
-        //   if(element.type == "checkbox"){
-        //     console.log(element.name, element.checked);
-        //   }else if(element.type == "text"){
-        //     console.log(element.name, element.value);
-        //   }
 
-          console.log("here");
           addGroup(connection, group).then((response) =>{
             console.log("addGroupresponse", response)
             })
       }
-      
+
+        //add all user name in drop down menu
+        window.setupAllUsers = async () => {
+        console.log("Yo") 
+        userInfo = 
+          getUsers(connection).then((users) =>
+            {
+              console.log(users)
+              var select = document.getElementById('users')
+              for (user in users["users"]){
+                console.log(user, users["users"][user])
+                var opt = document.createElement('option');
+                opt.value = users["users"][user];
+                opt.innerHTML = users["users"][user];
+                select.appendChild(opt);
+              }
+            });
+      };      
 
       //print current user and his groups
       window.setupUserInfo = async () => {
