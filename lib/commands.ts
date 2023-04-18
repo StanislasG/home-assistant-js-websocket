@@ -31,6 +31,9 @@ export const getGroups = (connection: Connection) =>
 export const addGroup = (connection: Connection, group: Object) =>
   connection.sendMessagePromise<HassGroup>(messages.add_group(group));
 
+export const editIntShare = (connection: Connection, editIntShare: Object) =>
+  connection.sendMessagePromise<HassEntity>(messages.edit_intshare(editIntShare));
+
 export const callService = (
   connection: Connection,
   domain: string,

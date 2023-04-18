@@ -87,6 +87,7 @@ export type HassEntityAttributeBase = {
   device_class?: string;
   state_class?: string;
   restored?: boolean;
+  sharing_users_int?: number;
 };
 
 export type HassEntity = HassEntityBase & {

@@ -6,8 +6,9 @@
     <button onclick="connection.reconnect()">Reconnect</button>
     <button onclick="setupEntitiesSubscription()">Re-subscribe</button>
     <button onclick="auth.revoke()">Revoke</button>
+
     <!-- current user and his groups -->
-    <p id='e'></p> 
+    <p id='current'></p> 
 
     <!-- add groups -->
     <form id='add_group'>
@@ -23,10 +24,19 @@
     <!-- users -->
     <form id='all_users'>
       <label for="users">see all users:</label>
-      <select name="users" id="users">
-        <!-- load at startup dynamicly the elements -->
-        <!-- <option value="volvo">Volvo</option> -->
-      </select>
+        <!-- load at startup dynamicly the elements (option tag)-->
+      <select name="users" id="users"></select>
+    </form>
+
+
+    <!-- edit intShare -->
+    <form id='edit_intshare'>
+      <label for="intshare">edit int share:</label>
+      <!-- load at startup dynamicly the elements (option tag)-->
+      <!-- <select name="intshare_user" id="intshare_user"></select> -->
+      <select name="intshare_entity" id="intshare_entity"></select>
+      int <input type="text"name="intshare_int" id="intshare_int">
+      <button type="button" form="edit_intshare" onclick="editIntShare()">Submit</button>
     </form>
 
     <!-- entities -->
@@ -41,6 +51,7 @@
         getUsers,
         getGroups,
         addGroup,
+        editIntShare,
         callService,
         createConnection,
         subscribeEntities,
@@ -99,6 +110,7 @@
 
         setupEntitiesSubscription();
         setupAllUsers();
+        setupAllEntity();
       })();
 
 
@@ -118,28 +130,68 @@
           'edit':    edit
         };
 
-          addGroup(connection, group).then((response) =>{
-            console.log("addGroupresponse", response)
-            })
+        addGroup(connection, group).then((response) =>{
+          // response should by "done"
+          console.log("addGroupresponse", response)
+        })
+      }
+
+      window.editIntShare = async () => {
+        var entity  = document.getElementById('intshare_entity').value
+        var shareint  = document.getElementById('intshare_int').value
+        var shareInt = shareint 
+        console.log("aaaa", entity, shareint)
+
+        editIntShare(connection, {"entity": entity, "intshare": shareInt}).then((response) =>{
+          // response should by "done"
+          console.log("editIntShare", response)
+        })
       }
 
         //add all user name in drop down menu
         window.setupAllUsers = async () => {
-        console.log("Yo") 
-        userInfo = 
-          getUsers(connection).then((users) =>
-            {
-              console.log(users)
-              var select = document.getElementById('users')
-              for (user in users["users"]){
-                console.log(user, users["users"][user])
+        const usersInfo = 
+          getUsers(connection).then((users) =>{
+            const element_ids = ["users"]  //, "intshare_user" ]
+            for (var element_id of element_ids){
+              var select = document.getElementById(element_id)
+              var selected = select.value
+              for (var child of select.children){
+                select.removeChild(child)
+              }              
+              for (var user of users["users"]){
                 var opt = document.createElement('option');
-                opt.value = users["users"][user];
-                opt.innerHTML = users["users"][user];
+                opt.value = user;
+                opt.innerHTML = user;
                 select.appendChild(opt);
               }
-            });
+              select.value =selected
+            }
+          });
       };      
+
+        //add all entity name in drop down menu
+        window.setupAllEntity = async () => {
+          const entiiesInfo = subscribeEntities(connection, (entities) => {
+            console.log("kjfks", entities)
+            const element_ids = ["intshare_entity"] 
+            for (var element_id of element_ids){
+              var select = document.getElementById(element_id)
+              var selected = select.value
+              for (var child of select.children){
+                select.removeChild(child)
+              }
+              Object.keys(entities).sort().forEach((entId) => {
+                var opt = document.createElement('option');
+                opt.value = entId;
+                opt.innerHTML = entId;
+                select.appendChild(opt);
+              })
+              select.value =selected
+            }
+          })
+        };
+
 
       //print current user and his groups
       window.setupUserInfo = async () => {
@@ -153,7 +205,7 @@
               {renderUserInfo(user, groups)})});
       };
       function renderUserInfo (user, groups) {
-        document.getElementById('e').innerHTML = 
+        document.getElementById('current').innerHTML = 
         `current user: ${user["name"]} <br> groups: ${groups["groups"]}`;
       };
       let userInfo;
@@ -190,6 +242,10 @@
             const text = document.createTextNode(entities[entId].state);
             tdState.appendChild(text);
 
+            const tdShare = document.createElement("td");
+            const textShare =  document.createTextNode(entities[entId].sharing_users_int);
+            tdShare.appendChild(textShare);
+
             if (
               ["switch", "light", "input_boolean"].includes(
                 entId.split(".", 1)[0]
@@ -204,6 +260,7 @@
               tdState.appendChild(button);
             }
             tr.appendChild(tdState);
+            tr.appendChild(tdShare)
 
             root.appendChild(tr);
           });
