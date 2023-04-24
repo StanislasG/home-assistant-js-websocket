@@ -162,11 +162,14 @@
         var sharepolicy_policy  = document.getElementById('sharepolicy_policy').value
         //todo check format policy
 
-
-        editOrCreateSharepolicy(connection, {"entity": entity, "sharepolicy": sharepolicy_policy}).then((response) =>{
+        if(entities[entity].state === "unavailable"){
+          console.log(`error, entity ${entity} is ${entities[entity].state}, can not perform editSharePolicy`)
+        }else{
+          editOrCreateSharepolicy(connection, {"entity": entity, "sharepolicy": sharepolicy_policy}).then((response) =>{
           // response should by "done"
           console.log("editOrCreateSharePolicy", response)
-        })
+          })
+        }
       }
 
         //add all user name in drop down menu
