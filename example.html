@@ -21,33 +21,34 @@
     <button type="button" form="add_group" onclick="addGroupFunc()">Submit</button>
     <br/>
 
-    <!-- users -->
+    <!-- users (load dynamicly) -->
     <form id='all_users'>
       <label for="users">see all users:</label>
-        <!-- load at startup dynamicly the elements (option tag)-->
       <select name="users" id="users"></select>
     </form>
 
-    <!-- get SharePolicy -->
+    <!-- get SharePolicy (load dynamicly) -->
     <form id='get_sharepolicy_form'>
       <label for="get_sharepolicy_label">edit int share:</label>
-      <!-- load at startup dynamicly the elements (option tag)-->
-      <!-- <select name="sharepolicy_user" id="sharepolicy_user"></select> -->
-      <select name="get_sharepolicy_entity" id="get_sharepolicy_entity"></select>
+      <select id="get_sharepolicy_entity"></select>
       policy: <div id='get_sharepolicy_policy'></div> 
-      <button type="button" form="get_sharepolicy" onclick="getSharePolicy()">Submit</button>
+      <button type="button" onclick="getSharePolicy()">Submit</button>
     </form>
-    
 
-
-    <!-- edit sharepolicy -->
+    <!-- edit sharepolicy (load dynamicly) -->
     <form id='edit_sharepolicy_form'>
       <label for="sharepolicy">edit int share:</label>
-      <!-- load at startup dynamicly the elements (option tag)-->
-      <!-- <select name="sharepolicy_user" id="sharepolicy_user"></select> -->
-      <select name="sharepolicy_entity" id="sharepolicy_entity"></select>
-      policy <input type="text" name="sharepolicy_policy" id="sharepolicy_policy">
-      <button type="button" form="edit_sharepolicy" onclick="editSharePolicy()">Submit</button>
+      <select id="sharepolicy_entity"></select>
+      policy <input type="text"id="sharepolicy_policy">
+      <button type="button"  onclick="editSharePolicy()">Submit</button>
+    </form>
+
+    <!-- get_users_having_permission -->
+    <form id='get_users_having_permission_form'>
+      <label>get user for entity: </label>
+      <select id="get_users_having_permission_select"></select>
+      Entity: <div id="get_users_having_permission_div"></div>div
+      <button type="button"  onclick="getUsersHavingPermission()">Submit</button>
     </form>
 
     <!-- entities -->
@@ -64,6 +65,7 @@
         addGroup,
         editOrCreateSharepolicy,
         getSharepolicy,
+        getUsersHavingPermission,
         callService,
         createConnection,
         subscribeEntities,
@@ -142,10 +144,9 @@
           'edit':    edit
         };
 
-        addGroup(connection, group).then((response) =>{
-          // response should by "done"
-          console.log("addGroupresponse", response)
-        })
+        addGroup(connection, group)
+        // response should by "done"
+        // .then((response) =>{console.log("addGroupresponse", response)})
       }
 
       window.getSharePolicy = async () => {
@@ -165,11 +166,16 @@
         if(entities[entity].state === "unavailable"){
           console.log(`error, entity ${entity} is ${entities[entity].state}, can not perform editSharePolicy`)
         }else{
-          editOrCreateSharepolicy(connection, {"entity": entity, "sharepolicy": sharepolicy_policy}).then((response) =>{
+          editOrCreateSharepolicy(connection, {"entity": entity, "sharepolicy": sharepolicy_policy})
           // response should by "done"
-          console.log("editOrCreateSharePolicy", response)
-          })
+          // .then((response) =>{console.log("editOrCreateSharePolicy", response)})
         }
+      }
+
+      window.getUsersHavingPermission = async () => {
+        var entity  = document.getElementById('get_users_having_permission_select').value
+        var users = await getUsersHavingPermission(connection, entity, "read")
+        console.log(users)
       }
 
         //add all user name in drop down menu
@@ -197,8 +203,8 @@
         //add all entity name in drop down menu
         window.setupAllEntity = async () => {
           const entiiesInfo = subscribeEntities(connection, (entities) => {
-            console.log("kjfks", entities)
-            const element_ids = ["sharepolicy_entity", "get_sharepolicy_entity"] 
+            // console.log("kjfks", entities)
+            const element_ids = ["sharepolicy_entity", "get_sharepolicy_entity", "get_users_having_permission_select"] 
             for (var element_id of element_ids){
               var select = document.getElementById(element_id)
               var selected = select.value

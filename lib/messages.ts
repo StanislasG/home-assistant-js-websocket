@@ -76,6 +76,13 @@ export function get_sharepolicy(sharepolicy: Object) {
     entity_id:  sharepolicy['entity'],
   };
 }
+export function get_users_having_permission(entity: string, key: string) {
+  return {
+    type:    "auth/get_users_having_permission",
+    entity:  entity,
+    key:     key
+  };
+}
 
 
 

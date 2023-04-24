@@ -31,6 +31,8 @@ export const getGroups = (connection: Connection) =>
 export const addGroup = (connection: Connection, group: Object) =>
   connection.sendMessagePromise<HassGroup>(messages.add_group(group));
 
+  export const getUsersHavingPermission = (connection: Connection, entity: string, key:string) =>
+  connection.sendMessagePromise<String[]>(messages.get_users_having_permission(entity, key))
   // doesn't work if unavailable
 export const editOrCreateSharepolicy = (connection: Connection, sharepolicy: Object) =>
   connection.sendMessagePromise<HassEntity>(messages.edit_or_create_sharepolicy(sharepolicy));
