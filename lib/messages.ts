@@ -62,14 +62,21 @@ export function add_group(group: Object) {
   };
 }
 
-export function edit_intshare(intshare: Object) {
-  console.log("arrieved", intshare)
+export function edit_or_create_sharepolicy(sharepolicy: Object) {
   return {
-    type: "auth/edit_intshare",
-    entity:   intshare['entity'],
-    intshare: intshare['intshare'],
+    type:      "config/entity_registry/update",
+    entity_id: sharepolicy['entity'],
+    name:      sharepolicy['sharepolicy'],
   };
 }
+
+export function get_sharepolicy(sharepolicy: Object) {
+  return {
+    type:       "config/entity_registry/get",
+    entity_id:  sharepolicy['entity'],
+  };
+}
+
 
 
 type ServiceCallMessage = {

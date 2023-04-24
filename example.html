@@ -28,15 +28,26 @@
       <select name="users" id="users"></select>
     </form>
 
-
-    <!-- edit intShare -->
-    <form id='edit_intshare'>
-      <label for="intshare">edit int share:</label>
+    <!-- get SharePolicy -->
+    <form id='get_sharepolicy_form'>
+      <label for="get_sharepolicy_label">edit int share:</label>
       <!-- load at startup dynamicly the elements (option tag)-->
-      <!-- <select name="intshare_user" id="intshare_user"></select> -->
-      <select name="intshare_entity" id="intshare_entity"></select>
-      int <input type="text"name="intshare_int" id="intshare_int">
-      <button type="button" form="edit_intshare" onclick="editIntShare()">Submit</button>
+      <!-- <select name="sharepolicy_user" id="sharepolicy_user"></select> -->
+      <select name="get_sharepolicy_entity" id="get_sharepolicy_entity"></select>
+      policy: <div id='get_sharepolicy_policy'></div> 
+      <button type="button" form="get_sharepolicy" onclick="getSharePolicy()">Submit</button>
+    </form>
+    
+
+
+    <!-- edit sharepolicy -->
+    <form id='edit_sharepolicy_form'>
+      <label for="sharepolicy">edit int share:</label>
+      <!-- load at startup dynamicly the elements (option tag)-->
+      <!-- <select name="sharepolicy_user" id="sharepolicy_user"></select> -->
+      <select name="sharepolicy_entity" id="sharepolicy_entity"></select>
+      policy <input type="text" name="sharepolicy_policy" id="sharepolicy_policy">
+      <button type="button" form="edit_sharepolicy" onclick="editSharePolicy()">Submit</button>
     </form>
 
     <!-- entities -->
@@ -51,7 +62,8 @@
         getUsers,
         getGroups,
         addGroup,
-        editIntShare,
+        editOrCreateSharepolicy,
+        getSharepolicy,
         callService,
         createConnection,
         subscribeEntities,
@@ -136,15 +148,24 @@
         })
       }
 
-      window.editIntShare = async () => {
-        var entity  = document.getElementById('intshare_entity').value
-        var shareint  = document.getElementById('intshare_int').value
-        var shareInt = shareint 
-        console.log("aaaa", entity, shareint)
+      window.getSharePolicy = async () => {
+        var entity  = document.getElementById('get_sharepolicy_entity').value
+        getSharepolicy(connection, {"entity": entity}).then((response) =>{
+          document.getElementById('get_sharepolicy_policy').innerHTML = response.sharepolicy //TODO change in backend
+          // console.log("get_sharepolicy_int", response)
+        })
+      }
 
-        editIntShare(connection, {"entity": entity, "intshare": shareInt}).then((response) =>{
+
+      window.editSharePolicy = async () => {
+        var entity  = document.getElementById('sharepolicy_entity').value
+        var sharepolicy_policy  = document.getElementById('sharepolicy_policy').value
+        //todo check format policy
+
+
+        editOrCreateSharepolicy(connection, {"entity": entity, "sharepolicy": sharepolicy_policy}).then((response) =>{
           // response should by "done"
-          console.log("editIntShare", response)
+          console.log("editOrCreateSharePolicy", response)
         })
       }
 
@@ -152,7 +173,7 @@
         window.setupAllUsers = async () => {
         const usersInfo = 
           getUsers(connection).then((users) =>{
-            const element_ids = ["users"]  //, "intshare_user" ]
+            const element_ids = ["users"]  //, "sharepolicy_user" ]
             for (var element_id of element_ids){
               var select = document.getElementById(element_id)
               var selected = select.value
@@ -174,7 +195,7 @@
         window.setupAllEntity = async () => {
           const entiiesInfo = subscribeEntities(connection, (entities) => {
             console.log("kjfks", entities)
-            const element_ids = ["intshare_entity"] 
+            const element_ids = ["sharepolicy_entity", "get_sharepolicy_entity"] 
             for (var element_id of element_ids){
               var select = document.getElementById(element_id)
               var selected = select.value
@@ -243,7 +264,7 @@
             tdState.appendChild(text);
 
             const tdShare = document.createElement("td");
-            const textShare =  document.createTextNode(entities[entId].sharing_users_int);
+            const textShare =  document.createTextNode(entities[entId].attributes.friendly_name);
             tdShare.appendChild(textShare);
 
             if (
