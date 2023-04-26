@@ -84,6 +84,45 @@ export function get_users_having_permission(entity: string, key: string) {
   };
 }
 
+export function add_sharepolicy(vote: Object) {
+  return {
+    type:    "auth/add_sharepolicy",
+    source:  vote['source'], //could be removed
+    target:  vote['target'],
+    entity:  vote['entity'],
+    key:     vote['key']
+  };
+}
+
+export function vote_sharepolicy(vote: Object) {
+  return {
+    type:    "auth/vote_sharepolicy",
+    source:  vote['source'],
+    target:  vote['target'],
+    entity:  vote['entity'],
+    key:     vote['key'],
+    vote:    vote['vote'],
+    origin:  vote['origin']
+  };
+}
+
+//could used as get votes for user
+export function get_vote(vote: Object) {
+  return {
+    type:    "auth/get_vote",
+    source:  vote['source'],
+    target:  vote['target'],
+    entity:  vote['entity'],
+    key:     vote['key']
+  };
+}
+
+
+//could used as get votes for user
+export function get_votes() {
+  return {type:    "auth/get_votes"};
+}
+
 
 
 type ServiceCallMessage = {

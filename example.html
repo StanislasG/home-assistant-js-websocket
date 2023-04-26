@@ -63,6 +63,8 @@
         getUsers,
         getGroups,
         addGroup,
+        addSharepolicy,
+        voteSharepolicy,
         editOrCreateSharepolicy,
         getSharepolicy,
         getUsersHavingPermission,
@@ -170,6 +172,35 @@
           // response should by "done"
           // .then((response) =>{console.log("editOrCreateSharePolicy", response)})
         }
+      }
+
+      /*
+      export function create_vote(vote: Object) {
+  return {
+    type:    "auth/set_vote",
+    source:  vote['source'], //could be removed
+    target:  vote['target'],
+    entity:  vote['entity'],
+    key:     vote['key']
+  };
+}
+      */
+
+      window.addSharepolicy = async () => {
+        var source  = "admin"
+        var target  = "a"
+        var entity  = "sensor.relative_humidity"
+        var key     = "read"
+        addSharepolicy(connection, {"source": source, "target": target, "entity": entity, "key": key})
+      }
+      window.voteSharepolicy = async () => {
+        var source  = "admin"
+        var target  = "a"
+        var entity  = "sensor.relative_humidity"
+        var key     = "read"
+        var vote    = true
+        var origin  = "a"
+        voteSharepolicy(connection, {"source": source, "target": target, "entity": entity, "key": key, "vote": vote, "origin":origin})
       }
 
       window.getUsersHavingPermission = async () => {
